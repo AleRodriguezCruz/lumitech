@@ -1,0 +1,182 @@
+// screens/RegisterScreen.js
+import React, { useState } from 'react';
+import { SafeAreaView, Text, TextInput, TouchableOpacity, StyleSheet, View, ImageBackground } from 'react-native';
+
+const RegisterScreen = ({ navigation }) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleRegister = () => {
+    if (email && password && confirmPassword && firstName && lastName) {
+      if (password === confirmPassword) {
+        // Aquí puedes agregar la lógica para registrar al usuario
+        alert('Usuario registrado con éxito!');
+        navigation.navigate('Login'); // Navegar de vuelta a la pantalla de inicio de sesión
+      } else {
+        alert('Las contraseñas no coinciden.');
+      }
+    } else {
+      alert('Por favor completa todos los campos.');
+    }
+  };
+
+  return (
+    <ImageBackground 
+      source={require('../assets/sala-1.jpg')} 
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.container}>
+        <View style={styles.registerBox}>
+          <Text style={styles.title}>Registrarse</Text>
+          
+          <View style={styles.inputBox}>
+            <TextInput
+              style={styles.input}
+              placeholder="Nombre"
+              value={firstName}
+              onChangeText={setFirstName}
+              autoCapitalize="words"
+              placeholderTextColor="#aaa"
+            />
+          </View>
+
+          <View style={styles.inputBox}>
+            <TextInput
+              style={styles.input}
+              placeholder="Apellidos"
+              value={lastName}
+              onChangeText={setLastName}
+              autoCapitalize="words"
+              placeholderTextColor="#aaa"
+            />
+          </View>
+
+          <View style={styles.inputBox}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              placeholderTextColor="#aaa"
+            />
+          </View>
+          
+          <View style={styles.inputBox}>
+            <TextInput
+              style={styles.input}
+              placeholder="Contraseña"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              placeholderTextColor="#aaa"
+            />
+          </View>
+
+          <View style={styles.inputBox}>
+            <TextInput
+              style={styles.input}
+              placeholder="Confirmar Contraseña"
+              secureTextEntry
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholderTextColor="#aaa"
+            />
+          </View>
+
+          <Text style={styles.passwordHint}>
+            Longitud mínima: 8-12 caracteres - Uso de mayúsculas y minúsculas
+          </Text>
+
+          <TouchableOpacity style={styles.button} onPress={handleRegister}>
+            <Text style={styles.buttonText}>Registrarse</Text>
+          </TouchableOpacity>
+
+          <View style={styles.login}>
+            <Text style={{ color: '#fff' }}>
+              ¿Ya tienes una cuenta? 
+              <Text 
+                style={styles.link} 
+                onPress={() => navigation.navigate('Login')} // Navegar a la pantalla de inicio de sesión
+              >
+                Inicia Sesión
+              </Text>
+            </Text>
+          </View>
+        </View>
+      </SafeAreaView>
+    </ImageBackground>
+  );
+};
+
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  registerBox: {
+    width: 350,
+    padding: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(5, 5, 5, .7)',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 20,
+  },
+  inputBox: {
+    width: '100%',
+    marginVertical: 15,
+  },
+  input: {
+    height: 40,
+    borderColor: '#fff',
+    borderWidth: 2,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    color: '#fff',
+    backgroundColor: 'transparent',
+    fontSize: 16,
+  },
+  passwordHint: {
+    color: '#fff',
+    fontSize: 12,
+    marginTop: -10,
+    marginBottom: 15,
+    textAlign: 'left',
+    width: '100%',
+  },
+  button: {
+    width: '80%',
+    height: 40,
+    backgroundColor: '#007bff',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  login: {
+    marginTop: 20,
+    textAlign: 'center',
+  },
+});
+
+export default RegisterScreen;
