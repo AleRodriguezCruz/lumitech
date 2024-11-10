@@ -1,27 +1,12 @@
 // screens/AddDevicesScreen.js
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert } from 'react-native';
 import axios from 'axios';
 
 const AddDevicesScreen = ({ navigation }) => {
   const [nombre, setNombre] = useState(''); // Estado para el nombre del dispositivo
   const [estado, setEstado] = useState(true); // Estado para el estado del dispositivo
   const [id_usuario, setIdUsuario] = useState(''); // Estado para el ID del usuario
-  const [usuarios, setUsuarios] = useState([]); // Estado para la lista de usuarios
-
-  // Efecto para cargar los usuarios al iniciar el componente
-  useEffect(() => {
-    const loadUsuarios = async () => {
-      try {
-        const response = await axios.get('https://flaskrosetalummitechapi.vercel.app/api/usuarios');
-        setUsuarios(response.data); // Guarda la lista de usuarios en el estado
-      } catch (error) {
-        console.error("Error fetching usuarios:", error);
-      }
-    };
-
-    loadUsuarios();
-  }, []);
 
   // Función para agregar un dispositivo
   const handleAddDevice = async () => {
@@ -75,17 +60,6 @@ const AddDevicesScreen = ({ navigation }) => {
           placeholderTextColor="#aaa"
         />
       </View>
-
-      {/* Mostrar lista de usuarios */}
-      <FlatList
-        data={usuarios}
-        keyExtractor={(item) => item.id_usuario.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => setIdUsuario(item.id_usuario.toString())}>
-            <Text>{item.nombre} - {item.correo}</Text>
-          </TouchableOpacity>
-        )}
-      />
 
       <TouchableOpacity style={styles.button} onPress={handleAddDevice}>
         <Text style={styles.buttonText}>Agregar Dispositivo</Text>
