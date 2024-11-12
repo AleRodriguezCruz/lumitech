@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert } from 'react-native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -6,42 +6,22 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const AddDevicesScreen = ({ navigation }) => {
   const [estado, setEstado] = useState(true); // Estado del dispositivo (true/false)
   const [ubicacion, setUbicacion] = useState(''); // Ubicación del dispositivo
-  const [id_usuario, setIdUsuario] = useState(null); // Estado para almacenar el ID del usuario
 
-  // Efecto para obtener el ID del usuario autenticado
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        // Aquí debes incluir tu token de autenticación si es necesario
-        const token = "tu_token_de_autenticacion"; // Reemplaza esto con tu lógica para obtener el token
-        const response = await axios.get('https://flaskrosetalummitechapi.vercel.app/api/usuarios/me', {
-          headers: {
-            Authorization: `Bearer ${token}`, // Agrega el token si es necesario
-          },
-        });
-        
-        // Asumimos que la respuesta contiene el ID del usuario
-        setIdUsuario(response.data.id_usuario); // Cambia esto según la estructura de tu respuesta
-      } catch (error) {
-        console.error("Error al obtener el usuario:", error.response ? error.response.data : error.message);
-        Alert.alert('Error', 'No se pudo obtener la información del usuario.');
-      }
-    };
-
-    fetchUser();
-  }, []); // Solo se ejecuta una vez al montar el componente
+  // ID del usuario fijo
+  const id_usuario = 5; // Establecer ID de usuario como 5
 
   // Función para agregar una roseta
   const handleAddDevice = async () => {
-    if (!ubicacion.trim() || !id_usuario) {
-      Alert.alert('Error', 'Por favor completa todos los campos.'); // Mensaje si falta información
+    // Verificar que los campos no estén vacíos
+    if (!ubicacion.trim()) {
+      Alert.alert('Error', 'Por favor completa el campo de ubicación.'); // Mensaje si falta información
       return; // Salir de la función si hay campos vacíos
     }
 
     const roseta = {
       estado: estado,
       ubicacion: ubicacion,
-      id_usuario: id_usuario // Usar el ID obtenido de la API
+      id_usuario: id_usuario // Usar el ID fijo
     };
 
     console.log("Datos a enviar:", roseta); // Imprimir datos para depuración
@@ -59,11 +39,11 @@ const AddDevicesScreen = ({ navigation }) => {
         Alert.alert('Éxito', 'Roseta agregada correctamente!');
         navigation.navigate('Home', { newDeviceName: ubicacion }); // Navegar a la pantalla principal y pasar el nuevo nombre de la roseta
       } else {
-        Alert.alert('Error', response.data.message); // Mostrar mensaje de error
+        Alert.alert('Error', response.data.message || 'Error desconocido'); // Mostrar mensaje de error
       }
     } catch (error) {
       console.error("Error al agregar roseta:", error.response ? error.response.data : error.message);
-      Alert.alert('Error', 'No se pudo agregar la roseta: ' + (error.response ? error.response.data.message : error.message));
+      Alert.alert('Error', `No se pudo agregar la roseta: ${error.response?.data?.message || error.message}`);
     }
   };
 
