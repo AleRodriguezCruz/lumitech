@@ -37,6 +37,26 @@ const HomeScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
+  const handleLogout = () => {
+    Alert.alert(
+      "Cerrar sesión",
+      "¿Estás seguro de que deseas cerrar sesión?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        {
+          text: "Cerrar sesión",
+          onPress: () => {
+            // Aquí puedes limpiar cualquier estado relacionado con la autenticación si es necesario
+            navigation.navigate('Login'); // Navegar a la pantalla de inicio de sesión
+          }
+        }
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -100,7 +120,7 @@ const HomeScreen = ({ navigation }) => {
         {/* Ícono de Cerrar Sesión */}
         <TouchableOpacity 
           style={styles.menuButton} 
-          onPress={() => handleLogout()}
+          onPress={handleLogout}
         >
           <View style={styles.iconContainer}>
             <Ionicons name="log-out" size={30} color="#ff4d4d" />
