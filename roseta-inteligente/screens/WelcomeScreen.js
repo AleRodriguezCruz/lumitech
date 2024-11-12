@@ -1,6 +1,8 @@
-// screens/WelcomeScreen.js
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Image } from 'react-native';
+
+// Importar el logo (asegúrate de que la ruta sea correcta)
+const logo = require('../assets/logo2.png'); // Cambia la ruta según la ubicación de tu logo
 
 const WelcomeScreen = ({ navigation }) => {
   const letters = "LUMITECH".split(""); // Dividir el texto en letras
@@ -18,10 +20,13 @@ const WelcomeScreen = ({ navigation }) => {
     });
 
     Animated.parallel(animationsArray).start();
-  }, [animations]);
+  }, [animations, letters]); // Incluir 'letters' en el array de dependencias
 
   return (
     <View style={styles.container}>
+      {/* Mostrar el logo */}
+      <Image source={logo} style={styles.logo} />
+      
       <View style={styles.titleContainer}>
         {letters.map((letter, index) => (
           <Animated.Text
@@ -52,7 +57,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black', // Fondo negro
+    backgroundColor: '#03045E', // Color de fondo azul fuerte
+  },
+  logo: {
+    width: 150, // Ajusta el ancho según sea necesario
+    height: 150, // Ajusta la altura según sea necesario
+    marginBottom: 20, // Espacio entre el logo y el título
   },
   titleContainer: {
     flexDirection: 'row', // Alinear las letras en una fila
