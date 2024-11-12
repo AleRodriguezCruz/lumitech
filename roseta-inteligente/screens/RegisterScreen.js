@@ -1,24 +1,21 @@
-// screens/RegisterScreen.js
 import React, { useState } from 'react';
 import { SafeAreaView, Text, TextInput, TouchableOpacity, StyleSheet, View, ImageBackground } from 'react-native';
 import axios from 'axios'; // Asegúrate de importar Axios
 
 const RegisterScreen = ({ navigation }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [nombre, setNombre] = useState(''); // Cambiar a solo nombre
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [telefono, setTelefono] = useState(''); // Nuevo estado para el teléfono
+  const [telefono, setTelefono] = useState(''); // Estado para el teléfono
   const [rol, setRol] = useState('usuario'); // Puedes establecer un rol por defecto o permitir al usuario elegir
 
   const handleRegister = async () => {
-    if (email && password && confirmPassword && firstName && lastName && telefono) {
+    if (nombre && email && password && confirmPassword && telefono) {
       if (password === confirmPassword) {
         // Crear objeto de usuario según la estructura requerida por la API
         const usuario = {
-          id_usuario: 0, // Este campo puede ser manejado por la API
-          nombre: `${firstName} ${lastName}`, // Combina nombre y apellidos
+          nombre: nombre,
           correo: email,
           password: password,
           telefono: telefono,
@@ -54,20 +51,9 @@ const RegisterScreen = ({ navigation }) => {
           <View style={styles.inputBox}>
             <TextInput
               style={styles.input}
-              placeholder="Nombre"
-              value={firstName}
-              onChangeText={setFirstName}
-              autoCapitalize="words"
-              placeholderTextColor="#aaa"
-            />
-          </View>
-
-          <View style={styles.inputBox}>
-            <TextInput
-              style={styles.input}
-              placeholder="Apellidos"
-              value={lastName}
-              onChangeText={setLastName}
+              placeholder="Nombre Completo"
+              value={nombre}
+              onChangeText={setNombre}
               autoCapitalize="words"
               placeholderTextColor="#aaa"
             />
