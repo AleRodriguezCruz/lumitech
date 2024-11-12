@@ -2,56 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, Text, StyleSheet, View, Image, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import axios from 'axios';
 
 // Imágenes estáticas
 const staticImage = require('../assets/product1.jpg');
 
-const HomeScreen = ({ navigation, route }) => {
-  const [deviceStates, setDeviceStates] = useState([]);
+const HomeScreen = ({ navigation }) => {
+  const [rosetas, setRosetas] = useState([]); // Estado para almacenar las rosetas
 
   useEffect(() => {
-    const newDeviceName = route.params?.newDeviceName;
-    if (newDeviceName) {
-      setDeviceStates(prevDevices => [
-        ...prevDevices,
-        { id: `${prevDevices.length + 1}`, name: newDeviceName, status: "Conectado", isOn: true }
-      ]);
-    }
-  }, [route.params]);
+    // Cargar rosetas desde la API
+    const fetchRosetas = async () => {
+      try {
+        const response = await axios.get('https://flaskrosetalummitechapi.vercel.app/api/rosetas');
+        console.log("Rosetas obtenidas:", response.data); // Imprimir datos obtenidos
+        setRosetas(response.data); // Asumiendo que la respuesta es un array de rosetas
+      } catch (error) {
+        console.error("Error al cargar rosetas:", error);
+        Alert.alert('Error', 'No se pudieron cargar las rosetas.');
+      }
+    };
 
-  const toggleDevice = (id) => {
-    setDeviceStates(prevStates =>
-      prevStates.map(device =>
-        device.id === id ? { ...device, isOn: !device.isOn } : device
-      )
-    );
-  };
-
-  const handleLogout = () => {
-    Alert.alert(
-      "Cerrar sesión",
-      "¿Estás seguro de que deseas cerrar sesión?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel"
-        },
-        {
-          text: "Cerrar sesión",
-          onPress: () => {
-            navigation.navigate('Login'); // Navegar a la pantalla de inicio de sesión
-          }
-        }
-      ]
-    );
-  };
+    fetchRosetas();
+  }, []); // Solo se ejecuta una vez al montar el componente
 
   const renderDevice = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Control Device', { deviceName: item.name })} style={styles.row}>
-      <View style={[styles.rowIcon, { backgroundColor: '#007bff' }]}>
-        <Ionicons name={item.isOn ? "bulb" : "bulb-outline"} size={20} color="#FFD700" />
+    <TouchableOpacity onPress={() => navigation.navigate('Control Device', { deviceId: item.id_roseta })} style={styles.row}>
+      <View style={[styles.rowIcon, { backgroundColor: item.estado ? '#007bff' : '#ccc' }]}>
+        <Ionicons name={item.estado ? "bulb" : "bulb-outline"} size={20} color="#FFD700" />
       </View>
-      <Text style={styles.rowLabel}>{item.name}</Text>
+      <Text style={styles.rowLabel}>{item.ubicacion}</Text>
       <View style={styles.rowSpacer} />
       <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
     </TouchableOpacity>
@@ -74,11 +54,11 @@ const HomeScreen = ({ navigation, route }) => {
         <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
       </TouchableOpacity>
 
-      {deviceStates.length > 0 ? (
+      {rosetas.length > 0 ? (
         <FlatList
-          data={deviceStates}
+          data={rosetas}
           renderItem={renderDevice}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id_roseta.toString()} // Asegúrate de que el ID sea una cadena
           contentContainerStyle={styles.deviceList}
         />
       ) : (
@@ -120,7 +100,7 @@ const HomeScreen = ({ navigation, route }) => {
         {/* Ícono de Cerrar Sesión */}
         <TouchableOpacity 
           style={styles.menuButton} 
-          onPress={handleLogout}
+          onPress={() => handleLogout()}
         >
           <View style={styles.iconContainer}>
             <Ionicons name="log-out" size={30} color="#ff4d4d" />
@@ -136,7 +116,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: '7%',
     paddingTop: '7%',
-    paddingBottom: 120, // Agregar padding inferior para dar espacio al menú
+    paddingBottom: 120,
     backgroundColor: '#fff',
   },
   header: {
@@ -149,47 +129,47 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color:'#000',
-    textAlign: 'center',
+    textAlign:'center',
   },
   
    /** Botón Agregar Dispositivo */
    row:{
-     flexDirection: 'row',
-     alignItems: 'center',
-     justifyContent: 'flex-start',
-     height: 50,
-     backgroundColor: '#f2f2f2',
-     borderRadius: 8,
-     marginBottom: 12,
-     paddingHorizontal: 12,
+     flexDirection:'row',
+     alignItems:'center',
+     justifyContent:'flex-start',
+     height:50,
+     backgroundColor:'#f2f2f2',
+     borderRadius:8,
+     marginBottom:12,
+     paddingHorizontal:12,
    },
    rowIcon:{
-     width: 32,
-     height: 32,
-     borderRadius: 9999,
-     marginRight: 12,
+     width:32,
+     height:32,
+     borderRadius :9999,
+     marginRight :12,
      flexDirection:'row',
      alignItems:'center',
      justifyContent:'center',
    },
    rowLabel:{
-     fontSize: 17,
-     fontWeight:'400',
+     fontSize :17,
+     fontWeight :'400',
      color:'#0c0c0c',
    },
    rowSpacer:{
-     flexGrow:1,
-     flexShrink:1,
-     flexBasis:0,
+     flexGrow :1,
+     flexShrink :1,
+     flexBasis :0,
    },
 
    /** Imagen estática */
    staticImage:{
-     width: '100%',
-     height: undefined,
-     aspectRatio: 16 / 9,
+     width :'100%',
+     height :undefined,
+     aspectRatio :16 /9,
      borderRadius :10,
-     marginBottom: '5%',
+     marginBottom :'5%',
    },
 
    /** Lista de dispositivos */
@@ -199,27 +179,27 @@ const styles = StyleSheet.create({
 
    /** Menú */
    menu:{
-     flexDirection:'row',
-     justifyContent:'space-around',
-     backgroundColor:'#007bff', // Color de fondo del menú
-     paddingVertical:'2%', // Usa un porcentaje para el padding vertical del menú
-     position:'absolute', // Fija el menú en la parte inferior
-     bottom:0,
-     left:0,
-     right:0,
+     flexDirection :'row',
+     justifyContent :'space-around',
+     backgroundColor :'#007bff',
+     paddingVertical :'2%',
+     position :'absolute',
+     bottom :0,
+     left :0,
+     right :0,
    },
    
    menuButton:{
-     flexDirection:'column',
-     alignItems:'center',
+     flexDirection :'column',
+     alignItems :'center',
    },
 
    iconContainer:{
-       backgroundColor:'#007bff', // Color de fondo del ícono
-       borderRadius: 9999, // Hace que sea circular
-       padding: 8, // Espaciado alrededor del ícono
-       justifyContent: 'center',
-       alignItems: 'center',
+       backgroundColor :'#007bff',
+       borderRadius :9999,
+       padding :8,
+       justifyContent :'center',
+       alignItems :'center',
    }
 });
 
