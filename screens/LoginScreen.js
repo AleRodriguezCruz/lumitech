@@ -2,11 +2,14 @@
 import React, { useState } from 'react';
 import { SafeAreaView, Text, TextInput, TouchableOpacity, StyleSheet, View, Image } from 'react-native';
 import axios from 'axios'; // Asegúrate de importar Axios
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 const LoginScreen = ({ navigation }) => {
   const [correo, setCorreo] = useState(''); // Cambié 'username' a 'correo'
   const [password, setPassword] = useState('');
-
+  
   const handleLogin = async () => {
     if (correo && password) {
       try {
@@ -23,7 +26,13 @@ const LoginScreen = ({ navigation }) => {
 
         // Manejar la respuesta de la API
         if (response.status === 200) {
-          alert('Inicio de sesión exitoso!');
+          console.log('Response',response.data.access_token)
+          const token = response.data.access_token
+           await AsyncStorage.setItem('access_token', token);
+          alert('Inicio de sesión exitoso!'); 
+          
+          const comprueba = await AsyncStorage.getItem('access_token')
+          console.log('prueba', comprueba)
           navigation.navigate('Home'); // Navegar a la pantalla principal
         } else {
           alert('Credenciales incorrectas. Por favor intenta de nuevo.');
