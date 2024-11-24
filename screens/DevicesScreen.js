@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+//DeviceScreen.js
+
+import React, { useState, useContext } from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -9,16 +11,22 @@ import {
   Switch,
   Image,
   Alert,
+  Linking
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
-import { useNavigation } from '@react-navigation/native'; // Importamos useNavigation
+import { useNavigation, useRoute } from '@react-navigation/native'; // Importamos useNavigation
+import Icon from 'react-native-vector-icons/Ionicons';
+import { ImageContext } from '../screens/ImageContext';
+
 
 export default function DevicesScreen() {
   const navigation = useNavigation(); // Obtenemos el objeto de navegación
-  const [avatarSource, setAvatarSource] = useState(require('../assets/user.jpg')); // Imagen predeterminada
+  const route = useRoute(); // Obtenemos la ruta para recibir parámetros
+  const { correo } = route.params || {}; // Extraemos el correo desde los parámetros
+
+  const { avatarSource, setAvatarSource } = useContext(ImageContext); // Usamos el contexto para manejar la imagen
   const [form, setForm] = useState({
-    darkMode: false,
     emailNotifications: true,
     pushNotifications: false,
   });
@@ -49,29 +57,58 @@ export default function DevicesScreen() {
   };
 
   // Función para manejar la selección de imagen desde la galería
-  const handleLaunchImageLibrary = async () => {
-    const pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
+ const handleLaunchImageLibrary = async () => {
+  const pickerResult = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    quality: 1,
+  });
 
-    if (!pickerResult.canceled) {
-      setAvatarSource({ uri: pickerResult.uri });
-    }
+  if (!pickerResult.canceled && pickerResult.assets?.length > 0) {
+    console.log('Image URI:', pickerResult.assets[0].uri); // Debug
+    setAvatarSource({ uri: pickerResult.assets[0].uri });
+  }
+};
+
+const handleLaunchCamera = async () => {
+  const cameraResult = await ImagePicker.launchCameraAsync({
+    allowsEditing: true,
+    quality: 1,
+  });
+
+  if (!cameraResult.canceled && cameraResult.assets?.length > 0) {
+    console.log('Camera Image URI:', cameraResult.assets[0].uri); // Debug
+    setAvatarSource({ uri: cameraResult.assets[0].uri });
+  }
+};
+
+// Función para manejar el cierre de sesión
+  const handleLogout = () => {
+    // Aquí puedes hacer lo necesario para cerrar sesión, por ejemplo, eliminar el token de autenticación
+    // o redirigir al usuario a la pantalla de inicio de sesión:
+    Alert.alert('Cerrar sesión', '¿Estás seguro de que deseas cerrar sesión?', [
+      {
+        text: 'Cancelar',
+        style: 'cancel',
+      },
+      {
+        text: 'Cerrar sesión',
+        onPress: () => {
+          navigation.replace('LoginScreen'); // Redirigir a la pantalla de login (ajusta el nombre de la pantalla según corresponda)
+        },
+      },
+    ]);
   };
 
-  // Función para manejar la selección de imagen usando la cámara
-  const handleLaunchCamera = async () => {
-    const cameraResult = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!cameraResult.canceled) {
-      setAvatarSource({ uri: cameraResult.uri });
-    }
+ // Función para manejar el redireccionamiento a la página de contacto
+  const handleContactUs = () => {
+    // Reemplaza esta URL con la página web de contacto que desees
+    const contactUrl = 'https://landing-page-kappa-cyan.vercel.app/';
+    Linking.openURL(contactUrl).catch((err) =>
+      console.error("Error al abrir la URL: ", err)
+    );
   };
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -80,7 +117,7 @@ export default function DevicesScreen() {
         style={styles.backButton}
         onPress={() => navigation.goBack()} // Acción para regresar
       >
-        <FeatherIcon name="chevron-left" size={24} color="#000" />
+        <Icon name="arrow-back" size={30} color="#000" />
       </TouchableOpacity>
 
       <View style={styles.profile}>
@@ -100,41 +137,21 @@ export default function DevicesScreen() {
         </TouchableOpacity>
 
         <View>
-          <Text style={styles.profileName}>ITE</Text>
-          <Text style={styles.profileAddress}>Ensenada, Baja California</Text>
+          <Text style={styles.profileName}>{correo || ""}</Text>
+
         </View>
       </View>
 
       <ScrollView>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
+          <Text style={styles.sectionTitle}>Preferencias</Text>
+
 
           <View style={styles.row}>
-            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-              <FeatherIcon color="#fff" name="moon" size={20} />
+            <View style={[styles.rowIcon, { backgroundColor: '#fff' }]}>
+              <FeatherIcon color="#000" name="at-sign" size={20} />
             </View>
-            <Text style={styles.rowLabel}>Dark Mode</Text>
-            <View style={styles.rowSpacer} />
-            <Switch
-              onValueChange={darkMode => setForm({ ...form, darkMode })}
-              value={form.darkMode}
-            />
-          </View>
-
-          <TouchableOpacity onPress={() => { /* handle onPress */ }} style={styles.row}>
-            <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-              <FeatherIcon color="#fff" name="navigation" size={20} />
-            </View>
-            <Text style={styles.rowLabel}>Location</Text>
-            <View style={styles.rowSpacer} />
-            <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-          </TouchableOpacity>
-
-          <View style={styles.row}>
-            <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
-              <FeatherIcon color="#fff" name="at-sign" size={20} />
-            </View>
-            <Text style={styles.rowLabel}>Email Notifications</Text>
+            <Text style={styles.rowLabel}>Notificaciones-Email</Text>
             <View style={styles.rowSpacer} />
             <Switch
               onValueChange={emailNotifications => setForm({ ...form, emailNotifications })}
@@ -143,10 +160,10 @@ export default function DevicesScreen() {
           </View>
 
           <View style={styles.row}>
-            <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
-              <FeatherIcon color="#fff" name="bell" size={20} />
+            <View style={[styles.rowIcon, { backgroundColor: '#fff' }]}>
+              <FeatherIcon color="#000" name="bell" size={20} />
             </View>
-            <Text style={styles.rowLabel}>Push Notifications</Text>
+            <Text style={styles.rowLabel}>Notificaciones</Text>
             <View style={styles.rowSpacer} />
             <Switch
               onValueChange={pushNotifications => setForm({ ...form, pushNotifications })}
@@ -156,33 +173,37 @@ export default function DevicesScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Resources</Text>
+          <Text style={styles.sectionTitle}>Recursos</Text>
 
           <TouchableOpacity onPress={() => { /* handle onPress */ }} style={styles.row}>
-            <View style={[styles.rowIcon, { backgroundColor: '#8e8d91' }]}>
-              <FeatherIcon color="#fff" name="flag" size={20} />
+            <View style={[styles.rowIcon, { backgroundColor: '#fff' }]}>
+              <FeatherIcon color="#000" name="flag" size={20} />
             </View>
-            <Text style={styles.rowLabel}>Report Bug</Text>
+            <Text style={styles.rowLabel}>Reportar Bug</Text>
+            <View style={styles.rowSpacer} />
+            <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleContactUs} style={styles.row}>
+            <View style={[styles.rowIcon, { backgroundColor: '#fff' }]}>
+              <FeatherIcon color="#000" name="mail" size={20} />
+            </View>
+            <Text style={styles.rowLabel}>Contáctanos</Text>
             <View style={styles.rowSpacer} />
             <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => { /* handle onPress */ }} style={styles.row}>
-            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-              <FeatherIcon color="#fff" name="mail" size={20} />
+            <View style={[styles.rowIcon, { backgroundColor: '#fff' }]}>
+              <FeatherIcon color="#000" name="star" size={20} />
             </View>
-            <Text style={styles.rowLabel}>Contact Us</Text>
+            <Text style={styles.rowLabel}>Calificar en App Store</Text>
             <View style={styles.rowSpacer} />
             <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => { /* handle onPress */ }} style={styles.row}>
-            <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-              <FeatherIcon color="#fff" name="star" size={20} />
-            </View>
-            <Text style={styles.rowLabel}>Rate in App Store</Text>
-            <View style={styles.rowSpacer} />
-            <FeatherIcon color={form.darkMode ? "#ffffff" : "#000000"} name="moon" size={20} />
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -226,12 +247,6 @@ const styles = StyleSheet.create({
     color: '#414d63',
     textAlign: 'center',
   },
-  profileAddress: {
-    marginTop: 5,
-    fontSize: 16,
-    color: '#989898',
-    textAlign: 'center',
-  },
   /** Section */
   section: {
     paddingHorizontal: 24,
@@ -250,7 +265,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     height: 50,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#fff',
     borderRadius: 8,
     marginBottom: 12,
     paddingHorizontal: 12,
@@ -280,5 +295,15 @@ const styles = StyleSheet.create({
     top: 40,
     left: 20,
     zIndex: 1
+  },
+  /** Botón Cerrar Sesión */
+  logoutButton: {
+    backgroundColor: '#FF4C4C', // Color rojo para llamar la atención
+    paddingVertical: 15,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
   },
 });
