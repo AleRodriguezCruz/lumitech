@@ -23,13 +23,12 @@ Inicia el servidor de desarrollo:
 bash
 npm start
 
-¿Qué herramientas necesitas?
+Herramientas necesarias
 
     Node.js
     Expo CLI (instálalo con npm install -g expo-cli)
 
 Librerías utilizadas
-¿Qué dependencias se usan en el proyecto?
 
     expo: Framework para construir aplicaciones React Native.
     axios: Realiza solicitudes HTTP.
@@ -42,32 +41,28 @@ Librerías utilizadas
     expo-camera: Acceso a la cámara del dispositivo.
     react-native-reanimated: Animaciones avanzadas.
 
-¿Qué dependencias de desarrollo se incluyen?
-
-    @babel/core: Transpilador de JavaScript.
-
 Estructura del Proyecto
-¿Cómo está organizado el proyecto?
 
     App.js: Punto de entrada principal de la aplicación.
-    Pantallas: Manejan las diferentes funcionalidades de la aplicación, como HomeScreen y AddDevicesScreen.
-    Componentes: Contienen elementos reutilizables de la interfaz de usuario.
+    Pantallas: Manejan las diferentes funcionalidades, como HomeScreen y AddDevicesScreen.
+    Componentes: Elementos reutilizables de la interfaz de usuario.
 
 Configuración adicional
-¿Qué debo configurar antes de ejecutar el proyecto?
 
     Archivos .env: Crea un archivo .env para almacenar configuraciones sensibles, como claves de API o URLs del servidor. Asegúrate de que esté incluido en .gitignore.
 
 Preguntas frecuentes
 
     ¿Por qué existe una carpeta llamada .expo en mi proyecto?
-    La carpeta .expo se genera automáticamente cuando inicias el proyecto con el comando expo start.
+    Se genera automáticamente cuando inicias el proyecto con el comando expo start.
     ¿Qué contienen los archivos en .expo?
         devices.json: Información sobre los dispositivos que han ejecutado la aplicación.
         packager-info.json: Configuración de los puertos y procesos del servidor.
         settings.json: Configuración del servidor de desarrollo.
     ¿Debo incluir la carpeta .expo en mi repositorio?
-    No. Esta carpeta es específica de tu máquina y ya está añadida a .gitignore.
+    No, esta carpeta es específica de tu máquina y ya está añadida a .gitignore.
 
-Licencia
+Licencia  
+
 Este proyecto está creado por Rodriguez de la Cruz Alejandra y Mayon Cisneros Flor Jazmín. 
+Este proyecto está creado por Rodriguez de la Cruz Alejandra y Mayon Cisneros Flor Jazmín
