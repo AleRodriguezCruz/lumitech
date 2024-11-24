@@ -11,8 +11,9 @@ Roseta Inteligente es una aplicación móvil para administrar dispositivos intel
 
 1. Clona el repositorio en tu máquina local:  
    ```bash
-   git clone <URL-DEL-REPOSITORIO>
+   git clone https://github.com/AleRodriguezCruz/lumitech/tree/main
    cd roseta-inteligente
+
 
 Instala las dependencias necesarias:
 
