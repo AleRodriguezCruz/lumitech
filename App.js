@@ -1,20 +1,23 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './screens/HomeScreen'; // Verifica la ruta
-import LoginScreen from './screens/LoginScreen'; // Verifica la ruta
-import DevicesScreen from './screens/DevicesScreen'; // Verifica la ruta
-import WelcomeScreen from './screens/WelcomeScreen'; // Verifica la ruta
-import AddDeviceScreen from './screens/AddDeviceScreen'; // Verifica la ruta
-import ControlDeviceScreen from './screens/ControlDeviceScreen'; // Verifica la ruta
-import RegisterScreen from './screens/RegisterScreen'; // Asegúrate de tener esta pantalla creada
+import HomeScreen from './screens/HomeScreen'; 
+import LoginScreen from './screens/LoginScreen'; 
+import DevicesScreen from './screens/DevicesScreen'; 
+import WelcomeScreen from './screens/WelcomeScreen'; 
+import AddDeviceScreen from './screens/AddDeviceScreen'; 
+import ControlDeviceScreen from './screens/ControlDeviceScreen'; 
+import RegisterScreen from './screens/RegisterScreen'; 
 import NotificationsScreen from './screens/NotificationsScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import { ImageProvider } from './screens/ImageContext';
+
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
+    <ImageProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
@@ -28,7 +31,9 @@ const AppNavigator = () => {
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
+    </ImageProvider>
   );
 };
+
 
 export default AppNavigator;
