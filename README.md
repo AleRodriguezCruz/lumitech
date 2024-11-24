@@ -1,17 +1,18 @@
-Roseta Inteligente
+# Roseta Inteligente
 
-    ¿Qué es Roseta Inteligente?
-    Roseta Inteligente es una aplicación móvil para administrar dispositivos inteligentes (rosetas). Permite a los usuarios agregar, visualizar y controlar el estado de las rosetas desde su dispositivo móvil. 
+> **¿Qué es Roseta Inteligente?**  
+Roseta Inteligente es una aplicación móvil para administrar dispositivos inteligentes (rosetas). Permite a los usuarios agregar, visualizar y controlar el estado de las rosetas desde su dispositivo móvil.
 
-Instalación
+---
 
-    ¿Cómo instalar el proyecto? 
+## **Instalación**
 
-    Clona el repositorio en tu máquina local:
+> **¿Cómo instalar el proyecto?**
 
-    bash
-    git clone https://github.com/AleRodriguezCruz/lumitech/tree/main
-    cd roseta-inteligente
+1. Clona el repositorio en tu máquina local:  
+   ```bash
+   git clone <URL-DEL-REPOSITORIO>
+   cd roseta-inteligente
 
 Instala las dependencias necesarias:
 
