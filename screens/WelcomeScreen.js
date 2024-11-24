@@ -45,7 +45,7 @@ const WelcomeScreen = ({ navigation }) => {
         ))}
       </View>
       <Text style={styles.subtitle}>Estamos encantados de tenerte aquí.</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.replace('Login')}>
         <Text style={styles.buttonText}>Iniciar</Text>
       </TouchableOpacity>
     </View>
@@ -58,6 +58,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#03045E', // Color de fondo azul fuerte
+    marginTop: 50, // Agregar margen superior para que no cubra la barra de estado
+    paddingHorizontal: 20, // Agregar un poco de padding horizontal
   },
   logo: {
     width: 150, // Ajusta el ancho según sea necesario
