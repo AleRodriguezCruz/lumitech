@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { SafeAreaView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert } from 'react-native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddDevicesScreen = ({ navigation }) => {
   const [estado, setEstado] = useState(true); // Estado del dispositivo (true/false)
@@ -19,22 +20,32 @@ const AddDevicesScreen = ({ navigation }) => {
     const roseta = {
       estado: estado,
       ubicacion: ubicacion,
-      id_usuario: id_usuario
+      id_usuario: id_usuario,
     };
 
     try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (!token) {
+        Alert.alert('Error', 'No se encontró el token de autenticación.');
+        return;
+      }
+
       const response = await axios.post('https://flaskrosetalummitechapi.vercel.app/api/rosetas/registrar', roseta, {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
+          Authorization: `Bearer ${token}`, // Agrega el token en el encabezado
         },
       });
 
       if (response.data.code === 0) {
         Alert.alert('Éxito', 'Roseta agregada correctamente!');
         navigation.navigate('Home', { refresh: true }); // Pasar un parámetro para indicar que se debe refrescar
+      } else if (response.data.code === 401) { 
+        Alert.alert('Error', response.data.message || 'Token expirado. Vuelve a iniciar sesión.');
+        navigation.navigate('Login');
       } else {
-        Alert.alert('Error', response.data.message || 'Error desconocido');
+        Alert.alert('Alerta', response.data.message || 'Se agrego correctamente');
       }
     } catch (error) {
       Alert.alert('Error', `No se pudo agregar la roseta: ${error.response?.data?.message || error.message}`);
